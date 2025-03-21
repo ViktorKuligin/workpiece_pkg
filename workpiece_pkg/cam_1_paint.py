@@ -38,9 +38,9 @@ class CamPaint(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    po = CamPaint()
-    rclpy.spin(po)
-    po.destroy_node()
+    node = CamPaint()
+    rclpy.spin(node)
+    node.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':

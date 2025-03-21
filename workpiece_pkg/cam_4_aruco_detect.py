@@ -7,19 +7,6 @@ from sensor_msgs.msg import Image
 from rclpy.node import Node
 from cv_bridge import CvBridge
 
-def empty(a):
-    pass
-
-cv2.namedWindow ("TrackBars")
-cv2.resizeWindow("TrackBars", 600, 400)
-
-cv2.createTrackbar("hue min", "TrackBars", 0,   180, empty)
-cv2.createTrackbar("hue max", "TrackBars", 180, 180, empty)
-cv2.createTrackbar("sat min", "TrackBars", 0,   255, empty)
-cv2.createTrackbar("sat max", "TrackBars", 255, 255, empty)
-cv2.createTrackbar("val min", "TrackBars", 0,   255, empty)
-cv2.createTrackbar("val max", "TrackBars", 255, 255, empty)
-
 def stackImages(scale, imgArray):
     rows = len(imgArray)
     cols = len(imgArray[0])
@@ -51,6 +38,16 @@ def stackImages(scale, imgArray):
         ver = hor
     return ver#  об
 
+def findArucoMarkers(img, markerSize=4, totalMarkers=50, draw=True):
+    imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    key = getattr(cv2.aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
+    arucoDict = cv2.aruco.Dictionary_get(key)
+    arucoParam = cv2.aruco.DetectorParameters_create()
+    corners, ids, rejected = cv2.aruco.detectMarkers(imgGray, arucoDict, parameters=arucoParam)
+    if draw:
+        cv2.aruco.drawDetectedMarkers(img, corners, ids)
+    return img, ids, corners
+
 class CamHSV(Node):
     def __init__(self):
         super().__init__('hsv_node')
@@ -62,14 +59,9 @@ class CamHSV(Node):
 
         self.sub = self.create_subscription(Image, self.topic_name, self.img_cb, 20)
 
-        self.hsv = {
-            'h_min': 0,
-            'h_max': 180,
-            's_min': 0,
-            's_max': 255,
-            'v_min': 0,
-            'v_max': 255,
-        }
+        # arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_250 if markerSize == 4 else cv2.aruco.DICT_5X5_250)
+
+
 
     def img_cb(self, msg):
 
@@ -78,33 +70,18 @@ class CamHSV(Node):
         height, width, _c = img_RGB.shape
         self.get_logger().info(f'img read. img = {height} x {width}', once = True)
 
-        img_HSV = cv2.cvtColor(img_RGB, cv2.COLOR_BGR2HSV)        # перевод из RGB в HSV
+        frame, ids, corners = findArucoMarkers(img_RGB,markerSize=4)
+        
+        self.get_logger().info(str(ids))
 
-        self.hsv.update({'h_min' : cv2.getTrackbarPos("hue min", "TrackBars")})
-        self.hsv.update({'h_max' : cv2.getTrackbarPos("hue max", "TrackBars")})
-        self.hsv.update({'s_min' : cv2.getTrackbarPos("sat min", "TrackBars")})
-        self.hsv.update({'s_max' : cv2.getTrackbarPos("sat max", "TrackBars")})
-        self.hsv.update({'v_min' : cv2.getTrackbarPos("val min", "TrackBars")})
-        self.hsv.update({'v_max' : cv2.getTrackbarPos("val max", "TrackBars")})
-
-        M_min = np.array([self.hsv.get('h_min'), self.hsv.get('s_min'), self.hsv.get('v_min')])
-        M_max = np.array([self.hsv.get('h_max'), self.hsv.get('s_max'), self.hsv.get('v_max')])
-
-        img_mask = cv2.inRange(img_HSV, M_min, M_max)
-        img_Result = cv2.bitwise_and(img_RGB, img_RGB, mask=img_mask)
-
-        img_RGB = cv2.rectangle(img_RGB, (10, 10), (150, 50), (0,0,0), -1)
-        img_HSV = cv2.rectangle(img_HSV, (10, 10), (150, 50), (0,0,0), -1)
-        img_mask = cv2.rectangle(img_mask, (10, 10), (150, 50), (0,0,0), -1)
-        img_Result = cv2.rectangle(img_Result, (10, 10), (150, 50), (0,0,0), -1)
-
-        img_RGB = cv2.putText(img_RGB, 'RGB', (20, 40), 2, 1, (255,255,255), 2)
-        img_HSV = cv2.putText(img_HSV, 'HSV', (20, 40), 2, 1, (255,255,255), 2)
-        img_mask = cv2.putText(img_mask, 'MASK', (20, 40), 2, 1, (255,255,255), 2)
-        img_Result = cv2.putText(img_Result, 'RESULT', (20, 40), 2, 1, (255,255,255), 2)
-
-        img_sc = stackImages (0.6, ([img_RGB,  img_HSV],
-                                    [img_mask, img_Result]))
+        # if ids == None:
+        #     self.get_logger().info("no aruco marker")
+        # else:
+        #     self.get_logger().info(str(ids))
+            # self.get_logger().info('1= ' + str(corners[0][0][0]) + ' 2= ' + str(corners[0][0][1]) + ' 3= ' + str(corners[0][0][2]) + ' 4= ' + str(corners[0][0][3]))
+        self.get_logger().info(' ')
+        img_sc = stackImages (1.0, ([img_RGB, frame],
+                                    [img_RGB, img_RGB]))
 
 
         cv2.imshow('camera', img_sc)

@@ -36,6 +36,9 @@ setup(
             "cam_hsv_node = workpiece_pkg.cam_2_hsv:main",
             "cam_hsv2_node = workpiece_pkg.cam_2_hsv_2:main",
             "cam_search_contour_hsv_node = workpiece_pkg.cam_3_search_contour_by_hsv:main",
+            "cam_aruco = workpiece_pkg.cam_4_aruco:main",
+            "cam_aruco_create = workpiece_pkg.cam_4_aruco_create:main",
+            "cam_aruco_detect = workpiece_pkg.cam_4_aruco_detect:main",
 
             "simple_hello_world_node = workpiece_pkg.simple_1_hello_world:main",
             "simple_transmitter_node = workpiece_pkg.simple_2_transmitter:main",
