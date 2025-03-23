@@ -103,7 +103,7 @@ class CamHSV(Node):
         img_mask = cv2.putText(img_mask, 'MASK', (20, 40), 2, 1, (255,255,255), 2)
         img_Result = cv2.putText(img_Result, 'RESULT', (20, 40), 2, 1, (255,255,255), 2)
 
-        img_sc = stackImages (0.6, ([img_RGB,  img_HSV],
+        img_sc = stackImages (1.0, ([img_RGB,  img_HSV],
                                     [img_mask, img_Result]))
 
 

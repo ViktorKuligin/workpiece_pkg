@@ -16,8 +16,8 @@ class CamArucoCreate(Node):
         self.declare_parameter('topic_name', 'aruco_image')
         self.declare_parameter('arucoId', 0)
         self.declare_parameter('arucoSize', 4)
-        self.declare_parameter('imagePixelSize', 50)
-        self.declare_parameter('continuosly', False)
+        self.declare_parameter('imagePixelSize', 100)
+        self.declare_parameter('continuosly', True)
         self.declare_parameter('timerStep', 0.1)
         self.declare_parameter('screen', True)
 
@@ -43,16 +43,24 @@ class CamArucoCreate(Node):
 
         img_aruco = self.createArucoMarkerImg(self.arucoId, self.arucoSize, self.imagePixelSize)
 
+        img = self.cv_bridge.cv2_to_imgmsg(img_aruco)
+        self.pub.publish(img)
+
+        img_id = cv2.putText(img_aruco, str(self.arucoId), (50, 50), 2, 1, (0, 0, 0), 1)
+        img_id = cv2.rectangle(img_id, (0, 0), (img_id.shape[1], img_id.shape[0]), (0,255,0), 5)
+        
+        file_name = f'/home/vi/aruco_img/id_{self.arucoId}_4x4.png'
+        success = cv2.imwrite(file_name, img_id)
+        if not success:
+            self.get_logger().info("Error saving image")
+
         if self.continuosly:
             self.get_logger().info(str(self.arucoId))
             self.arucoId += 1
             if self.arucoId == 250:
                 self.arucoId = 0
 
-        img = self.cv_bridge.cv2_to_imgmsg(img_aruco)
-        self.pub.publish(img)
-
-        cv2.imshow('camera', img_aruco)
+        cv2.imshow('camera', img_id)
         cv2.waitKey(1)
 
     def createArucoMarkerImg(self, id, arucoMarkerSize, pixelSize):

@@ -77,15 +77,15 @@ def find_con_by_HSV_max_dict(img, hsv, kernel):
         'area': -1,
         'left': -1,
         'right': -1,
-        'up': -1,
-        'down': -1,
+        'top': -1,
+        'botton': -1,
     }
 
     img_HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                      # переводим вх картинку из BGR в HSV
-    img_mask = cv2.inRange(img_HSV, min, max)                           # бинарная картинка (с шумами), где погашены пиксели др цвета
+    img_mask_noise = cv2.inRange(img_HSV, min, max)                           # бинарная картинка (с шумами), где погашены пиксели др цвета
     edge = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel, kernel))  # создаем массив для подавления шума
-    mask = cv2.morphologyEx(img_mask, cv2.MORPH_OPEN, edge)             # бинарная картинка без шумов
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # определяем контура
+    img_mask_noiseless = cv2.morphologyEx(img_mask_noise, cv2.MORPH_OPEN, edge)             # бинарная картинка без шумов
+    contours, hierarchy = cv2.findContours(img_mask_noiseless, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # определяем контура
     index = -1                                       # индекс контура
     area_mas = 0                                     # максимальная площадь
     N = len(contours)                                # количество контуров
@@ -98,17 +98,15 @@ def find_con_by_HSV_max_dict(img, hsv, kernel):
     if index != -1:
         Mom = cv2.moments(contours[index])               # Моменты (центр тяжести)
 
-        out.update({'cx' : int(Mom['m10'] / Mom['m00'])})
-        out.update({'cy' : int(Mom['m01'] / Mom['m00'])})
-
-        out.update({'area' : cv2.contourArea(contours[index])})
-
         x, y, w, h = cv2.boundingRect(contours[index])   # получаем крайник коор контура
 
+        out.update({'cx' : int(Mom['m10'] / Mom['m00'])})
+        out.update({'cy' : int(Mom['m01'] / Mom['m00'])})
+        out.update({'area' : cv2.contourArea(contours[index])})
         out.update({'left' : x})
         out.update({'right' : x + w})
-        out.update({'up' : y})
-        out.update({'down' : y + h})
+        out.update({'top' : y})
+        out.update({'botton' : y + h})
 
     return out                                     # отправляем пакет
 

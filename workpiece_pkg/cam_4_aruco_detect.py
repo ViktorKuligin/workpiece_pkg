@@ -38,12 +38,14 @@ def stackImages(scale, imgArray):
         ver = hor
     return ver#  об
 
-def findArucoMarkers(img, markerSize=4, totalMarkers=50, draw=True):
+def findArucoMarkers(img, markerSize=4, totalMarkers=250, draw=True):
+    # img = cv2.GaussianBlur(img, (3, 3), 0)
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ret, img_binary = cv2.threshold(imgGray, 150, 255, cv2.THRESH_BINARY)
     key = getattr(cv2.aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
     arucoDict = cv2.aruco.Dictionary_get(key)
     arucoParam = cv2.aruco.DetectorParameters_create()
-    corners, ids, rejected = cv2.aruco.detectMarkers(imgGray, arucoDict, parameters=arucoParam)
+    corners, ids, rejected = cv2.aruco.detectMarkers(img_binary, arucoDict, parameters=arucoParam)
     if draw:
         cv2.aruco.drawDetectedMarkers(img, corners, ids)
     return img, ids, corners
@@ -67,8 +69,10 @@ class CamHSV(Node):
 
         img_RGB = self.bridgeObject.imgmsg_to_cv2(msg)
 
-        height, width, _c = img_RGB.shape
-        self.get_logger().info(f'img read. img = {height} x {width}', once = True)
+        img_grey = cv2.cvtColor(img_RGB, cv2.COLOR_BGR2GRAY)
+
+        # height, width = img_RGB.shape
+        self.get_logger().info(f'img read. img = {img_RGB.shape[1]} x {img_RGB.shape[0]}', once = True)
 
         frame, ids, corners = findArucoMarkers(img_RGB,markerSize=4)
         
