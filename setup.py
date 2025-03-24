@@ -49,7 +49,7 @@ setup(
             "rviz_point_move_node = workpiece_pkg.rviz_1_point_move:main",
             "rviz_range_node = workpiece_pkg.rviz_2_range:main",
             "rviz_pose_node = workpiece_pkg.rviz_3_pose:main",
-            "rviz_marker_sphere_node = workpiece_pkg.rviz_4_marker_sphere:main",
+            "rviz_marker_single_node = workpiece_pkg.rviz_4_marker_single:main",
         ],
     },
 )

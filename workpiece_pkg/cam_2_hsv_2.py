@@ -13,14 +13,14 @@ def empty(a):
 cv2.namedWindow ("TrackBars")
 cv2.resizeWindow("TrackBars", 400, 400)
 
-cv2.createTrackbar("hue min", "TrackBars", 83,   180, empty)
-cv2.createTrackbar("hue max", "TrackBars", 106, 180, empty)
-cv2.createTrackbar("sat min", "TrackBars", 83,   255, empty)
-cv2.createTrackbar("sat max", "TrackBars", 255, 255, empty)
-cv2.createTrackbar("val min", "TrackBars", 75,   255, empty)
-cv2.createTrackbar("val max", "TrackBars", 255, 255, empty)
-cv2.createTrackbar("kernel", "TrackBars", 5,    15, empty)
-cv2.createTrackbar("area_min", "TrackBars", 0,    200, empty)
+cv2.createTrackbar("hue min", "TrackBars", 0,   180, empty)  # 90
+cv2.createTrackbar("hue max", "TrackBars", 180, 180, empty)   # 106
+cv2.createTrackbar("sat min", "TrackBars", 0,   255, empty)  # 55
+cv2.createTrackbar("sat max", "TrackBars", 255, 255, empty)   # 255
+cv2.createTrackbar("val min", "TrackBars", 0,   255, empty)  # 70 
+cv2.createTrackbar("val max", "TrackBars", 255, 255, empty)   # 255
+cv2.createTrackbar("kernel", "TrackBars", 0,    15, empty)    # 7
+cv2.createTrackbar("area_min", "TrackBars", 0,    200, empty) # 50
 
 def stackImages(scale, imgArray):
     rows = len(imgArray)
@@ -138,7 +138,7 @@ class CamHSV(Node):
         
         img_Result = cv2.bitwise_and(img_RGB, img_RGB, mask=img_mask_noiseless)
         if data.get('area') != -1:
-            img_Result = cv2.rectangle(img_Result, (data.get('left'), data.get('top')), (data.get('right'), data.get('botton')), (0,255,255), 3)
+            img_Result = cv2.rectangle(img_Result, (data.get('left'), data.get('top')), (data.get('right'), data.get('botton')), (0,255,255), 2)
             img_Result = cv2.circle(img_Result, (data.get('cx'), data.get('cy')), 3, (0,255,255), 1)
 
         size = 1
@@ -165,11 +165,11 @@ class CamHSV(Node):
         
         # -- finish --
         color = (0,0,0)
-        img_RGB = cv2.rectangle(img_RGB, (10, 10), (150, 50), color, -1)
-        img_HSV = cv2.rectangle(img_HSV, (10, 10), (150, 50), color, -1)
+        img_RGB = cv2.rectangle(img_RGB, (10, 10), (100, 50), color, -1)
+        img_HSV = cv2.rectangle(img_HSV, (10, 10), (100, 50), color, -1)
         img_data = cv2.rectangle(img_data, (10, 10), (150, 50), color, -1)
-        img_mask_noise = cv2.rectangle(img_mask_noise, (10, 10), (150, 50), color, -1)
-        img_mask_noiseless = cv2.rectangle(img_mask_noiseless, (10, 10), (150, 50), color, -1)
+        img_mask_noise = cv2.rectangle(img_mask_noise, (10, 10), (250, 50), color, -1)
+        img_mask_noiseless = cv2.rectangle(img_mask_noiseless, (10, 10), (270, 50), color, -1)
         img_Result = cv2.rectangle(img_Result, (10, 10), (150, 50), color, -1)
 
         color = (255,255,255)
@@ -180,7 +180,7 @@ class CamHSV(Node):
         img_mask_noiseless = cv2.putText(img_mask_noiseless, 'MASK noiseless', (20, 40), 2, 1, color, 2)
         img_Result = cv2.putText(img_Result, 'RESULT', (20, 40), 2, 1, color, 2)
 
-        img_sc = stackImages (0.8, ([img_RGB,        img_HSV,            img_data ],
+        img_sc = stackImages (0.75, ([img_RGB,        img_HSV,            img_data ],
                                     [img_mask_noise, img_mask_noiseless, img_Result]))
 
 
