@@ -13,11 +13,11 @@ def empty(a):
 cv2.namedWindow ("TrackBars")
 cv2.resizeWindow("TrackBars", 400, 400)
 
-cv2.createTrackbar("hue min", "TrackBars", 0,   180, empty)  # 90
+cv2.createTrackbar("hue min", "TrackBars", 0,   180, empty)   # 90
 cv2.createTrackbar("hue max", "TrackBars", 180, 180, empty)   # 106
-cv2.createTrackbar("sat min", "TrackBars", 0,   255, empty)  # 55
+cv2.createTrackbar("sat min", "TrackBars", 0,   255, empty)   # 55
 cv2.createTrackbar("sat max", "TrackBars", 255, 255, empty)   # 255
-cv2.createTrackbar("val min", "TrackBars", 0,   255, empty)  # 70 
+cv2.createTrackbar("val min", "TrackBars", 0,   255, empty)   # 70 
 cv2.createTrackbar("val max", "TrackBars", 255, 255, empty)   # 255
 cv2.createTrackbar("kernel", "TrackBars", 0,    15, empty)    # 7
 cv2.createTrackbar("area_min", "TrackBars", 0,    200, empty) # 50
