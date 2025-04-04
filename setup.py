@@ -28,6 +28,7 @@ setup(
             "joy_red_node = workpiece_pkg.joy_1_red:main",
             "joy_green_node = workpiece_pkg.joy_2_green:main",
             "joy_param_node = workpiece_pkg.joy_3_param:main",
+            "joy_simulator_node = workpiece_pkg.joy_simulator:main",
 
             "cam_reader_node = workpiece_pkg.cam_0_reader:main",
             "cam_create_node = workpiece_pkg.cam_0_create_black_rect:main",
