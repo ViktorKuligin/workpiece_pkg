@@ -30,6 +30,10 @@ setup(
             "joy_param_node = workpiece_pkg.joy_3_param:main",
             "joy_simulator_node = workpiece_pkg.joy_simulator:main",
 
+            "pg_keyboard = workpiece_pkg.pg_1_keyboard:main",
+            "pg_simulator = workpiece_pkg.pg_2_joy_simulator:main",
+            "pg_direction = workpiece_pkg.pg_3_move_number_direction:main",
+
             "cam_reader_node = workpiece_pkg.cam_0_reader:main",
             "cam_create_node = workpiece_pkg.cam_0_create_black_rect:main",
             "cam_rgb_node = workpiece_pkg.cam_0_create_rgb:main",
