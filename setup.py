@@ -32,7 +32,7 @@ setup(
 
             "pg_keyboard = workpiece_pkg.pg_1_keyboard:main",
             "pg_simulator = workpiece_pkg.pg_2_joy_simulator:main",
-            "pg_direction = workpiece_pkg.pg_3_move_number_direction:main",
+            "pg_direction = workpiece_pkg.pg_3_move_number_directions:main",
 
             "cam_reader_node = workpiece_pkg.cam_0_reader:main",
             "cam_create_node = workpiece_pkg.cam_0_create_black_rect:main",

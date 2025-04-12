@@ -3,18 +3,74 @@ import rclpy
 import numpy as np
 import pygame as pg
 
+from sensor_msgs.msg import Joy    # ros2 launch teleop_twist_joy teleop-launch.py
+from rclpy.node import Node
+from geometry_msgs.msg import Twist, Vector3
+
 pg.init()
 screen = pg.display.set_mode((500,500))
 pg.display.update()
 
-from sensor_msgs.msg import Joy    # ros2 launch teleop_twist_joy teleop-launch.py
-from rclpy.node import Node
+color_on = (0, 255, 0)
+color_off = (255, 0, 0)
 
+button_color_status = {
+    'on': (0, 255, 0),
+    'off': (255, 0, 0)
+}
+
+font = pg.font.Font(None, 24)
+
+cx = 30
+wb = 70 # размер кнопки
+TH1 = 5 # толщина контура прямоугольника при нажатии
+dl = 20
+
+# masb1 = np.array([cx+dl,  70, wb, wb])
+
+
+
+location = {
+    '1': (50, 250, wb, wb),
+    '2': (150, 250, wb, wb),
+    '3': (250, 250, wb, wb),
+    '4': (50, 150, wb, wb),
+    '5': (150, 150, wb, wb),
+    '6': (250, 150, wb, wb),
+    '7': (50, 50, wb, wb),
+    '8': (150, 50, wb, wb),
+    '9': (250, 50, wb, wb),
+}
+
+def button_draw(button_name, status):
+    color = button_color_status.get(status)
+    array = location.get(button_name)
+    pg.draw.rect(screen, color, array, TH1)
+    img = font.render(button_name, True, color)
+    screen.blit(img, (array[0] + 10, array[1] + 20))
+    
 
 class JoyGreen(Node):
     def __init__(self):
         super().__init__('joy_green')
         self.get_logger().warn("joy green start")
+
+        self.xx = 0.0
+        self.yy = 0.0
+
+        self.vel = 0.5
+
+        self.button_name = ''
+
+        # self.font1 = pg.font.Font(None, 24) # размер текста для надписи кнопки
+        # self.colorTB0 = (255, 0, 0)      # цвет текста - кнопка не нажата
+        # self.colorTB1 = (0, 255, 0)      # цвет текста - кнопка нажата
+
+        self.cx = 30
+        self.wb = 70 # размер кнопки
+        self.TH1 = 5 # толщина контура прямоугольника при нажатии
+        self.dl = 20
+        self.masb1 = np.array([self.cx+self.dl,  70, self.wb, self.wb])  # кнопка 1
 
         # self.pg.init()
 
@@ -206,18 +262,108 @@ class JoyGreen(Node):
 
         }
         # self.sub = self.create_subscription(Joy, '/joy', self.joy_cb, 10)
-        self.pub = self.create_publisher(Joy, '/joy', 10)
+        self.pub = self.create_publisher(Vector3, 'direction', 10)
         self.keyboard = self.create_timer(0.01, self.keyboard_timer)
-    
-    def keyboard_timer(self):
-        # msg = Joy()
-        for event in pg.event.get():
-            if event.type == pg.KEYDOWN:
-                if event.scancode == 26:
-                    self.get_logger().info('w')
+
+        button_draw('1', 'off')
+        button_draw('2', 'off')
+        button_draw('3', 'off')
+        button_draw('4', 'off')
+        button_draw('5', 'off')
+        button_draw('6', 'off')
+        button_draw('7', 'off')
+        button_draw('8', 'off')
+        button_draw('9', 'off')
         pg.display.update()
 
+    def keyboard_timer(self):
+
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                msg = Vector3()
+                # self.get_logger().info(str(event))
+                if event.scancode == 89:
+                    self.button_name = '1'
+                    self.xx = -0.7071
+                    self.yy = 0.7071
+
+                elif event.scancode == 90:
+                    self.button_name = '2'
+                    self.xx = -1.0
+                    self.yy = 0.0
+
+                elif event.scancode == 91:
+                    self.button_name = '3'
+                    self.xx = -0.7071
+                    self.yy = -0.7071
+
+                elif event.scancode == 92:
+                    self.button_name = '4'
+                    self.xx = 0.0
+                    self.yy = 1.0
+
+                elif event.scancode == 93:
+                    self.button_name = '5'
+                    self.xx = 0.0
+                    self.yy = 0.0
+
+                elif event.scancode == 94:
+                    self.button_name = '6'
+                    self.xx = 0.0
+                    self.yy = -1.0
+
+                elif event.scancode == 95:
+                    self.button_name = '7'
+                    self.xx = 0.7071
+                    self.yy = 0.7071
+                    # button_draw(self.button_name, 'on')
+
+                elif event.scancode == 96:
+                    self.button_name = '8'
+                    self.xx = 1.0
+                    self.yy = 0.0
+
+                    # button_draw(self.button_name, 'on')
                     
+                    # pg.draw.rect(screen, color_on, masb1, TH1)
+                    # img = font.render(self.button_name, True, color_on)
+                    # mm = location.get(self.button_name)
+                    # # screen.blit(img, (masb1[0] + 10, masb1[1] + 20))
+                    # screen.blit(img, (mm[0] + 10, mm[1] + 20))
+
+                elif event.scancode == 97:
+                    self.button_name = '9'
+                    self.xx = 0.7071
+                    self.yy = -0.7071
+
+                if len(self.button_name):
+                    button_draw(self.button_name, 'on')
+                    # self.get_logger().info(self.button_name)
+                    # self.get_logger().info(f'x={self.xx}, y={self.yy}')
+                    msg.x = self.xx * self.vel
+                    msg.y = self.yy * self.vel
+                    self.get_logger().info(f'x={msg.x}, y={msg.y}')
+                    self.pub.publish(msg)
+                    self.button_name = ''
+                    self.xx = 0.0
+                    self.yy = 0.0
+            
+            if event.type == pg.KEYUP:
+                button_draw('1', 'off')
+                button_draw('2', 'off')
+                button_draw('3', 'off')
+                button_draw('4', 'off')
+                button_draw('5', 'off')
+                button_draw('6', 'off')
+                button_draw('7', 'off')
+                button_draw('8', 'off')
+                button_draw('9', 'off')
+                # pg.draw.rect(screen, color_off, self.masb1, self.TH1)
+                # img = font.render("b1", True, color_off)
+                # screen.blit(img, (self.masb1[0] + 10, self.masb1[1] + 20))
+
+
+        pg.display.update()
 
     def joy_cb(self, msg: Joy):
         val_header = msg.header
