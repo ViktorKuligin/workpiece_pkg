@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 import numpy as np
-import pygame as pg
+import pygame as pg     # pip3 install pygame
 
 pg.init()
 screen = pg.display.set_mode((200,100))
