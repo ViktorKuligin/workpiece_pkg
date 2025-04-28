@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 import numpy as np
-from tf_transformations import quaternion_from_euler # sudo apt install ros-humble-tf-transformation
+from tf_transformations import quaternion_from_euler # sudo apt install ros-humble-tf-transformations
 
 from rclpy.node import Node
 from geometry_msgs.msg import Vector3, Point, Quaternion

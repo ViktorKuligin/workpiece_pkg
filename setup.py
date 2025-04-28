@@ -33,6 +33,8 @@ setup(
             "pg_keyboard = workpiece_pkg.pg_1_keyboard:main",
             "pg_simulator = workpiece_pkg.pg_2_joy_simulator:main",
             "pg_direction = workpiece_pkg.pg_3_move_number_directions:main",
+            "pg_chassis_sim = workpiece_pkg.pg_4_chassis_sim:main",
+            "pg_chassis_gen = workpiece_pkg.pg_5_chassis_gen:main",
 
             "cam_reader_node = workpiece_pkg.cam_0_reader:main",
             "cam_create_node = workpiece_pkg.cam_0_create_black_rect:main",
@@ -55,6 +57,7 @@ setup(
             "rviz_range_node = workpiece_pkg.rviz_2_range:main",
             "rviz_pose_node = workpiece_pkg.rviz_3_pose:main",
             "rviz_marker_single_node = workpiece_pkg.rviz_4_marker_single:main",
+            "rviz_car_sim = workpiece_pkg.rviz_5_car_sim:main",
         ],
     },
 )
