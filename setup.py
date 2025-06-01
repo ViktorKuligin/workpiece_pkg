@@ -58,6 +58,7 @@ setup(
             "rviz_pose_node = workpiece_pkg.rviz_3_pose:main",
             "rviz_marker_single_node = workpiece_pkg.rviz_4_marker_single:main",
             "rviz_car_sim = workpiece_pkg.rviz_5_car_sim:main",
+            "rviz_car_2_sim = workpiece_pkg.rviz_6_car_sim_2:main",
         ],
     },
 )
